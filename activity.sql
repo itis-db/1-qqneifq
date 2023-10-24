@@ -1,15 +1,11 @@
--- рекурсия 
-WITH RECURSIVE r AS (
-    SELECT 
-        1 AS i, 
-        1 AS factorial
-    
-    UNION 
-
-    SELECT 
-        i+1 AS i, 
-        factorial * (i+1) as factorial 
-    FROM r
-    WHERE i < 10
+with recursive hierarchy as
+(
+	select a.activityid, a.activitytypeid, a.code, a.name, a.parentid, 0 as hlevel
+	from activity a 
+	union all
+	select r.activityid, r.activitytypeid, r.code, r.name, r.parentid, h.hlevel +1
+	from activity r
+	join hierarchy h on h.parentid = r.activityid
 )
-SELECT * FROM r;
+select * from hierarchy
+order by hlevel;
